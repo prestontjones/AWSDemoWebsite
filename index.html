@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test AWS Math Website</title>
+    <!-- Styling for the client UI -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #6e7f7d, #2f3b37);
+            color: #fff;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 36px;
+            text-align: center;
+            color: #fff;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 40px 50px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 500;
+            color: #f4f4f4;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #86C232;
+            background-color: #fff;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #86C232;
+            border: none;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #6b9d1e;
+        }
+
+        button:active {
+            background-color: #5c8816;
+        }
+
+        /* Result display */
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            font-size: 22px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #fff;
+            text-align: center;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            input, button {
+                font-size: 16px;
+            }
+        }
+
+    </style>
+    <script>
+        // callAPI function that takes the base and exponent numbers as parameters
+        var callAPI = (base, exponent) => {
+            // instantiate a headers object
+            var myHeaders = new Headers();
+            // add content type header to object
+            myHeaders.append("Content-Type", "application/json");
+            // using built in JSON utility package turn object to string and store in a variable
+            var raw = JSON.stringify({ "base": base, "exponent": exponent });
+            // create a JSON object with parameters for API call and store in a variable
+            var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+            };
+            // make API call with parameters and use promises to get response
+            fetch("https://yi29q243pg.execute-api.us-west-1.amazonaws.com/dev", requestOptions)
+                .then(response => response.text())
+                .then(result => {
+                    // Parse the result and display in the result div
+                    var resultData = JSON.parse(result).body;
+                    document.getElementById('result').innerText = "Result: " + resultData;
+                    document.getElementById('result').style.display = 'block';  // Show the result div
+                })
+                .catch(error => console.log('error', error));
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Math AWS Website</h1>
+        <form>
+            <label for="base">Base number:</label>
+            <input type="text" id="base" placeholder="Enter base number">
+
+            <label for="exponent">Exponent:</label>
+            <input type="text" id="exponent" placeholder="Enter exponent">
+
+            <button type="button" onclick="callAPI(document.getElementById('base').value, document.getElementById('exponent').value)">CALCULATE</button>
+        </form>
+
+        <!-- Result Display Section -->
+        <div id="result" class="result" style="display:none;">Result: </div>
+    </div>
+</body>
+</html>
